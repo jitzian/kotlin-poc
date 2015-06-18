@@ -3,6 +3,7 @@ package mobi.porquenao.poc.kotlin.ui
 import android.graphics.Color
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,7 @@ import butterknife.bindView
 import mobi.porquenao.poc.kotlin.R
 import mobi.porquenao.poc.kotlin.core.Item
 import mobi.porquenao.poc.kotlin.core.ItemRepository
-import java.util.Calendar
+import java.util.*
 
 public class MainAdapter : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
 
@@ -37,11 +38,17 @@ public class MainAdapter : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mItems.get(position)
-        val color = "#" + item.getUpdatedAt().getTimeInMillis().toString().substring(7)
-        holder.vCard.setCardBackgroundColor(Color.parseColor(color))
-        holder.vText.setText(color)
-        holder.vText.setTag(item)
-        holder.vText.setOnClickListener(mOnClickListener)
+        val date = item.getUpdatedAt().getTimeInMillis()
+
+        val color = "#" + date.toString().substring(7)
+        holder.card.setCardBackgroundColor(Color.parseColor(color))
+        holder.text.setText(color)
+        holder.date.setText(DateFormat.format("hh:mm:ss", Date(date)))
+
+        with (holder.container) {
+            setTag(item)
+            setOnClickListener(mOnClickListener)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -56,10 +63,10 @@ public class MainAdapter : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
     }
 
     public class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
-        val vCard: CardView by bindView(R.id.card)
-        val vText: TextView by bindView(R.id.text)
-
+        val card: CardView by bindView(R.id.card)
+        val container: View by bindView(R.id.container)
+        val text: TextView by bindView(R.id.text)
+        val date: TextView by bindView(R.id.date)
     }
 
 }
